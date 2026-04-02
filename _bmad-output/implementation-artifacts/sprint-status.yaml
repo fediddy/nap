@@ -1,0 +1,85 @@
+# generated: 2026-04-01
+# project: nap
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+generated: 2026-04-01
+project: nap
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # ─────────────────────────────────────────────
+  # Epic 1: Project Foundation & Business Profile Management
+  # ─────────────────────────────────────────────
+  epic-1: in-progress
+  1-1-project-scaffolding-and-infrastructure-setup: done
+  1-2-create-individual-business-profile: done
+  1-3-list-search-and-filter-business-profiles: done
+  1-4-edit-and-deactivate-business-profile: backlog
+  1-5-basic-csv-bulk-import: backlog
+  epic-1-retrospective: optional
+
+  # ─────────────────────────────────────────────
+  # Epic 2: Data Import & Validation Engine
+  # ─────────────────────────────────────────────
+  epic-2: backlog
+  2-1-csv-validation-format-and-completeness-checks: backlog
+  2-2-duplicate-detection-during-import: backlog
+  2-3-inline-error-fixing-in-import-preview: backlog
+  2-4-change-detection-and-diff-view-on-re-import: backlog
+  epic-2-retrospective: optional
+
+  # ─────────────────────────────────────────────
+  # Epic 3: Directory Submission Pipeline
+  # ─────────────────────────────────────────────
+  epic-3: backlog
+  3-1-browser-automation-infrastructure-and-napbrowserprofile: backlog
+  3-2-session-relay-and-cookie-handoff: backlog
+  3-3-directory-adapter-pattern-and-base-infrastructure: backlog
+  3-4-bing-places-adapter-file-export: backlog
+  3-5-facebook-business-adapter-camoufox-browser: backlog
+  3-6-yelp-business-adapter-camoufox-browser: backlog
+  3-7-submission-plan-preview-and-approval-gate: backlog
+  3-8-queue-infrastructure-rate-limiting-and-retry: backlog
+  epic-3-retrospective: optional
+
+  # ─────────────────────────────────────────────
+  # Epic 4: Update Propagation & Lifecycle Management
+  # ─────────────────────────────────────────────
+  epic-4: backlog
+  4-1-push-profile-updates-to-active-directory-listings: backlog
+  4-2-per-directory-business-name-override: backlog
+  4-3-listing-removal-for-deactivated-businesses: backlog
+  4-4-pause-and-resume-directory-submissions: backlog
+  epic-4-retrospective: optional
+
+  # ─────────────────────────────────────────────
+  # Epic 5: Monitoring Dashboard & Action Queue
+  # ─────────────────────────────────────────────
+  epic-5: backlog
+  5-1-summary-dashboard: backlog
+  5-2-status-matrix-business-x-directory-grid: backlog
+  5-3-action-queue: backlog
+  5-4-per-business-citation-profile-detail: backlog
+  5-5-batch-level-status-tracking: backlog
+  epic-5-retrospective: optional
+
+  # ─────────────────────────────────────────────
+  # Epic 6: Directory Registry & Health Monitoring
+  # ─────────────────────────────────────────────
+  epic-6: backlog
+  6-1-directory-registry-list-and-health-overview: backlog
+  6-2-automated-directory-health-monitoring-and-auto-pause: backlog
+  6-3-add-new-directory-to-registry: backlog
+  epic-6-retrospective: optional
+
+  # ─────────────────────────────────────────────
+  # Epic 7: Reporting & Data Export
+  # ─────────────────────────────────────────────
+  epic-7: backlog
+  7-1-full-data-export-to-csv: backlog
+  7-2-nap-consistency-check: backlog
+  epic-7-retrospective: optional
