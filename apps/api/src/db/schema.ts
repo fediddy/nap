@@ -7,6 +7,7 @@ import {
   pgEnum,
   jsonb,
   boolean,
+  integer,
 } from 'drizzle-orm/pg-core';
 
 // Enums
@@ -44,8 +45,44 @@ export const directories = pgTable('directories', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// Batches table
+export const batchStatusEnum = pgEnum('batch_status', ['imported', 'failed']);
+
+export const batches = pgTable('batches', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  csvFilename: varchar('csv_filename', { length: 255 }).notNull(),
+  importDate: timestamp('import_date', { withTimezone: true }).notNull().defaultNow(),
+  businessCount: integer('business_count').notNull().default(0),
+  status: batchStatusEnum('status').notNull().default('imported'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Submissions table
+export const submissionStatusEnum = pgEnum('submission_status', [
+  'queued', 'submitting', 'submitted', 'verified', 'failed', 'requires_action', 'removed'
+]);
+
+export const submissions = pgTable('submissions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  businessId: uuid('business_id').notNull().references(() => businesses.id),
+  directoryId: uuid('directory_id').notNull().references(() => directories.id),
+  status: submissionStatusEnum('status').notNull().default('queued'),
+  externalId: varchar('external_id', { length: 255 }),
+  errorCode: varchar('error_code', { length: 100 }),
+  message: text('message'),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }),
+  verifiedAt: timestamp('verified_at', { withTimezone: true }),
+  lastAttempt: timestamp('last_attempt', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // Type exports for use in services
 export type Business = typeof businesses.$inferSelect;
 export type NewBusiness = typeof businesses.$inferInsert;
 export type Directory = typeof directories.$inferSelect;
 export type NewDirectory = typeof directories.$inferInsert;
+export type Batch = typeof batches.$inferSelect;
+export type NewBatch = typeof batches.$inferInsert;
+export type Submission = typeof submissions.$inferSelect;
+export type NewSubmission = typeof submissions.$inferInsert;

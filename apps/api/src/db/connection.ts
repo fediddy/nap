@@ -8,9 +8,9 @@ if (!process.env.DATABASE_URL) {
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production'
-    ? { rejectUnauthorized: true }
-    : { rejectUnauthorized: false },
+  // Set DATABASE_SSL=true for external managed DBs (Neon, Supabase, RDS).
+  // Leave unset for same-network Docker/Coolify deployments — no SSL needed.
+  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
 export const db = drizzle(pool, { schema });

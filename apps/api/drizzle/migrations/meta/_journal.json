@@ -8,6 +8,20 @@
       "when": 1775119548201,
       "tag": "0000_motionless_wonder_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775123391974,
+      "tag": "0001_blue_lady_deathstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775200000000,
+      "tag": "0002_submissions_table",
+      "breakpoints": true
     }
   ]
 }

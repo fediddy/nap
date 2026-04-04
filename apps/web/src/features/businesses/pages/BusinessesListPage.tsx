@@ -99,12 +99,20 @@ export default function BusinessesListPage() {
               <p className="mt-0.5 text-sm text-gray-500">{count} profile{count !== 1 ? 's' : ''}</p>
             )}
           </div>
-          <Link
-            to="/businesses/new"
-            className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
-          >
-            + Add Business
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              to="/businesses/import"
+              className="inline-flex items-center rounded-md border border-primary-600 px-4 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50"
+            >
+              + Import CSV
+            </Link>
+            <Link
+              to="/businesses/new"
+              className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
+            >
+              + Add Business
+            </Link>
+          </div>
         </div>
 
         {/* Filters */}

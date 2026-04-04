@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { ilike, and, eq, asc, desc, count, or } from 'drizzle-orm';
+import { ilike, and, eq, asc, desc, count, or, sql } from 'drizzle-orm';
 import { businessProfileSchema } from '@nap/shared';
 import { db } from '../db/connection.js';
 import { businesses } from '../db/schema.js';
@@ -91,5 +91,93 @@ export default async function businessesRoutes(fastify: FastifyInstance) {
       .returning();
 
     return reply.status(201).send({ data: business, meta: {} });
+  });
+
+  // GET /api/businesses/:id
+  fastify.get('/businesses/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+
+    const rows = await db.select().from(businesses).where(eq(businesses.id, id));
+
+    if (rows.length === 0) {
+      return reply.status(404).send({
+        error: true,
+        code: 'NOT_FOUND',
+        message: 'Business not found',
+      });
+    }
+
+    return reply.send({ data: rows[0], meta: {} });
+  });
+
+  // PUT /api/businesses/:id
+  fastify.put('/businesses/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+
+    const result = businessProfileSchema.safeParse(request.body);
+
+    if (!result.success) {
+      return reply.status(400).send({
+        error: true,
+        code: 'VALIDATION_ERROR',
+        message: 'Validation failed',
+        details: result.error.errors.map((e) => ({
+          field: e.path.join('.'),
+          issue: e.message,
+        })),
+      });
+    }
+
+    const { name, address, city, state, zip, phone, category, website } = result.data;
+
+    const rows = await db
+      .update(businesses)
+      .set({
+        name,
+        address,
+        city,
+        state,
+        zip,
+        phone,
+        category,
+        website: website || null,
+        updatedAt: sql`now()`,
+      })
+      .where(eq(businesses.id, id))
+      .returning();
+
+    if (rows.length === 0) {
+      return reply.status(404).send({
+        error: true,
+        code: 'NOT_FOUND',
+        message: 'Business not found',
+      });
+    }
+
+    return reply.send({ data: rows[0], meta: {} });
+  });
+
+  // DELETE /api/businesses/:id — soft delete (sets status to 'deactivated')
+  fastify.delete('/businesses/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+
+    const rows = await db
+      .update(businesses)
+      .set({
+        status: 'deactivated',
+        updatedAt: sql`now()`,
+      })
+      .where(eq(businesses.id, id))
+      .returning({ id: businesses.id, status: businesses.status });
+
+    if (rows.length === 0) {
+      return reply.status(404).send({
+        error: true,
+        code: 'NOT_FOUND',
+        message: 'Business not found',
+      });
+    }
+
+    return reply.send({ data: { id: rows[0].id, status: 'deactivated' }, meta: {} });
   });
 }

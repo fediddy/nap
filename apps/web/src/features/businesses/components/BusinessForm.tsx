@@ -6,6 +6,8 @@ import { cn } from '../../../lib/utils';
 interface BusinessFormProps {
   onSubmit: (data: BusinessProfileInput) => void;
   isSubmitting: boolean;
+  defaultValues?: Partial<BusinessProfileInput>;
+  submitLabel?: string;
 }
 
 interface FieldProps {
@@ -37,13 +39,14 @@ const inputClass = (error?: string) =>
       : 'border-gray-300 bg-white'
   );
 
-export default function BusinessForm({ onSubmit, isSubmitting }: BusinessFormProps) {
+export default function BusinessForm({ onSubmit, isSubmitting, defaultValues, submitLabel }: BusinessFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<BusinessProfileInput>({
     resolver: zodResolver(businessProfileSchema),
+    defaultValues,
   });
 
   return (
@@ -140,7 +143,7 @@ export default function BusinessForm({ onSubmit, isSubmitting }: BusinessFormPro
             'disabled:opacity-50 disabled:cursor-not-allowed transition'
           )}
         >
-          {isSubmitting ? 'Creating…' : 'Create Business'}
+          {isSubmitting ? 'Saving…' : (submitLabel ?? 'Create Business')}
         </button>
       </div>
     </form>

@@ -13,3 +13,8 @@ export interface SubmissionResult {
   errorCode?: string;
   message?: string;
 }
+
+export interface RemovalResult {
+  status: 'removed' | 'not_found' | 'failed';
+  message?: string;
+}
