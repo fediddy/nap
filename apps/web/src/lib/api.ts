@@ -1,7 +1,11 @@
 import type { ApiError, ApiResponse } from '@nap/shared';
 
+// In production (Coolify), VITE_API_URL is set to the API's external URL.
+// In local dev with docker-compose, relative paths work via nginx proxy.
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(path, {
+  const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json', ...init?.headers },
     ...init,
   });
