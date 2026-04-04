@@ -2,10 +2,11 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json turbo.json ./
+COPY tsconfig.json ./
 COPY packages/shared/package.json ./packages/shared/
 COPY apps/web/package.json ./apps/web/
 
-RUN npm ci
+RUN npm ci --include=dev
 
 COPY packages/shared ./packages/shared
 COPY apps/web ./apps/web

@@ -3,10 +3,13 @@ WORKDIR /app
 
 # Copy workspace manifests first (layer cache)
 COPY package.json package-lock.json turbo.json ./
+COPY tsconfig.json ./
 COPY packages/shared/package.json ./packages/shared/
 COPY apps/api/package.json ./apps/api/
 
-RUN npm ci
+# --include=dev ensures devDependencies (typescript, etc.) are installed
+# even when Coolify passes NODE_ENV=production as a build arg
+RUN npm ci --include=dev
 
 # Copy source
 COPY packages/shared ./packages/shared
