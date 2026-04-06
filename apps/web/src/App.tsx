@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import Layout from './components/Layout';
 
 // Business pages
 import BusinessesListPage from './features/businesses/pages/BusinessesListPage';
@@ -38,25 +39,27 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Dashboard */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/matrix" element={<StatusMatrixPage />} />
-          <Route path="/actions" element={<ActionQueuePage />} />
+          <Route element={<Layout />}>
+            {/* Dashboard */}
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/matrix" element={<StatusMatrixPage />} />
+            <Route path="/actions" element={<ActionQueuePage />} />
 
-          {/* Businesses */}
-          <Route path="/businesses" element={<BusinessesListPage />} />
-          <Route path="/businesses/new" element={<NewBusinessPage />} />
-          <Route path="/businesses/import" element={<ImportPage />} />
-          <Route path="/businesses/:id" element={<BusinessDetailPage />} />
-          <Route path="/businesses/:id/plan" element={<SubmissionPlanPage />} />
-          <Route path="/businesses/:id/citations" element={<BusinessCitationPage />} />
+            {/* Businesses */}
+            <Route path="/businesses" element={<BusinessesListPage />} />
+            <Route path="/businesses/new" element={<NewBusinessPage />} />
+            <Route path="/businesses/import" element={<ImportPage />} />
+            <Route path="/businesses/:id" element={<BusinessDetailPage />} />
+            <Route path="/businesses/:id/plan" element={<SubmissionPlanPage />} />
+            <Route path="/businesses/:id/citations" element={<BusinessCitationPage />} />
 
-          {/* Directories */}
-          <Route path="/directories" element={<DirectoriesListPage />} />
-          <Route path="/directories/new" element={<AddDirectoryPage />} />
+            {/* Directories */}
+            <Route path="/directories" element={<DirectoriesListPage />} />
+            <Route path="/directories/new" element={<AddDirectoryPage />} />
 
-          {/* Reporting */}
-          <Route path="/export" element={<ExportPage />} />
+            {/* Reporting */}
+            <Route path="/export" element={<ExportPage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" richColors />
