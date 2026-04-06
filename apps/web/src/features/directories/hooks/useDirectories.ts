@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import type { DirectoryConfig } from '@nap/shared';
+import { API_BASE } from '../../../lib/api';
 
 async function fetchDirectories(): Promise<{ data: DirectoryConfig[]; meta: { count: number } }> {
-  const res = await fetch('/api/directories');
+  const res = await fetch(`${API_BASE}/api/directories`);
   if (!res.ok) throw new Error('Failed to fetch directories');
   return res.json();
 }

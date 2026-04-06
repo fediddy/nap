@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE } from '../../../lib/api';
 
 export interface ActionItem {
   submissionId: string;
@@ -13,7 +14,7 @@ export interface ActionItem {
 }
 
 async function fetchActions(): Promise<ActionItem[]> {
-  const res = await fetch('/api/submissions/actions');
+  const res = await fetch(`${API_BASE}/api/submissions/actions`);
   if (!res.ok) throw new Error('Failed to fetch action queue');
   const json = await res.json();
   return json.data as ActionItem[];

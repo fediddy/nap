@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE } from '../../../lib/api';
 
 export type SubmissionStatus =
   | 'queued'
@@ -25,7 +26,7 @@ export interface DashboardSummary {
 }
 
 async function fetchSummary(): Promise<DashboardSummary> {
-  const res = await fetch('/api/submissions/summary');
+  const res = await fetch(`${API_BASE}/api/submissions/summary`);
   if (!res.ok) throw new Error('Failed to fetch dashboard summary');
   const json = await res.json();
   return json.data as DashboardSummary;

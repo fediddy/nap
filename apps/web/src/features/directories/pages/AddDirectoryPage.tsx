@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { API_BASE } from '../../../lib/api';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -55,7 +56,7 @@ export default function AddDirectoryPage() {
 
   async function onSubmit(values: AddDirectoryFormValues) {
     try {
-      const res = await fetch('/api/directories', {
+      const res = await fetch(`${API_BASE}/api/directories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

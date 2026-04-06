@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { API_BASE } from '../../../lib/api';
 
 interface ImportPayload {
   csv?: string;
@@ -62,7 +63,7 @@ export interface BulkUpdateResult {
 export function useImportBusinesses() {
   return useMutation({
     mutationFn: async (payload: ImportPayload): Promise<ImportResult | ValidationPreview> => {
-      const res = await fetch('/api/businesses/import', {
+      const res = await fetch(`${API_BASE}/api/businesses/import`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -80,7 +81,7 @@ export function useImportBusinesses() {
 export function useBulkUpdateBusinesses() {
   return useMutation({
     mutationFn: async (payload: BulkUpdatePayload): Promise<BulkUpdateResult> => {
-      const res = await fetch('/api/businesses/bulk', {
+      const res = await fetch(`${API_BASE}/api/businesses/bulk`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
