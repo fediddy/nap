@@ -28,6 +28,16 @@ See memory file `reference_coolify_nap.md` for UUIDs and internal URLs.
 - `COPY tsconfig.json ./` required in builder stage
 - packages/shared built in API Dockerfile before `tsc` compile
 
+## Post-Clone Setup
+After cloning on a new machine, reinstall the git hook:
+```bash
+chmod +x .git/hooks/post-commit
+```
+The hook file is already in `.git/hooks/post-commit` — just needs to be made executable. If missing, recreate it:
+```bash
+echo '#!/bin/bash\nnode "$(git rev-parse --show-toplevel)/scripts/sync-brain.js"' > .git/hooks/post-commit && chmod +x .git/hooks/post-commit
+```
+
 ## Migration Strategy
 - Drizzle migrations run automatically on API container start via `node dist/db/migrate.js`
 - Raw SQL migration files: must manually add entry to `apps/api/drizzle/migrations/meta/_journal.json`
