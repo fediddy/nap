@@ -240,6 +240,9 @@ export default async function planRoutes(fastify: FastifyInstance) {
       queuedDirectoryIds.push(dir.id);
     }
 
+    // Hand off DB-queued submissions to the BullMQ worker
+    await enqueueQueuedSubmissions();
+
     return reply.send({
       data: {
         queued: queuedDirectoryIds.length,
