@@ -73,17 +73,22 @@ export const submissionWorker = new Worker<SubmissionJobData>(
   }
 );
 
-// On job failure — track consecutive failures for auto-pause
+// On job failure — update DB status and track consecutive failures for auto-pause
 submissionWorker.on('failed', async (job, err) => {
   if (!job) return;
-  const { directoryId, directorySlug } = job.data;
+  const { submissionId, directoryId, directorySlug } = job.data;
+
+  // Mark submission as failed in DB
+  await db.update(submissions)
+    .set({ status: 'failed', errorCode: 'WORKER_ERROR', message: err.message, updatedAt: sql`now()` })
+    .where(eq(submissions.id, submissionId));
 
   // Count consecutive failures for this directory
   const recentJobs = await submissionQueue.getJobs(['failed'], 0, 20);
   const consecutiveFailures = recentJobs.filter(j => j.data.directorySlug === directorySlug).length;
 
   await checkDirectoryFailureThreshold(directoryId, directorySlug, consecutiveFailures);
-  logger.error({ submissionId: job.data.submissionId, directorySlug, err: err.message }, 'Submission job failed');
+  logger.error({ submissionId, directorySlug, err: err.message }, 'Submission job failed');
 });
 
 /**
