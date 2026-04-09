@@ -5,7 +5,7 @@ import { createBrowserContext, humanType } from '../browser/engine.js';
 import { restoreSession } from '../browser/session.js';
 
 export class FacebookBusinessAdapter implements DirectoryAdapter {
-  readonly slug = 'facebook-business';
+  readonly slug = 'facebook';
   readonly displayName = 'Facebook Business';
   readonly type = 'browser' as const;
 

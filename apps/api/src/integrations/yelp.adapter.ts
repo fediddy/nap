@@ -5,7 +5,7 @@ import { createBrowserContext, humanType } from '../browser/engine.js';
 import { restoreSession } from '../browser/session.js';
 
 export class YelpBusinessAdapter implements DirectoryAdapter {
-  readonly slug = 'yelp-business';
+  readonly slug = 'yelp';
   readonly displayName = 'Yelp Business';
   readonly type = 'browser' as const;
 
