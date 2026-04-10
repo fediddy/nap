@@ -257,6 +257,13 @@ export default async function planRoutes(fastify: FastifyInstance) {
     return reply.send({ data: { enqueued: count } });
   });
 
+  // POST /api/queue/drain — obliterate stale BullMQ jobs (safe after redeploy)
+  fastify.post('/queue/drain', async (_request, reply) => {
+    await submissionQueue.obliterate({ force: true });
+    const count = await enqueueQueuedSubmissions();
+    return reply.send({ data: { drained: true, requeued: count } });
+  });
+
   // GET /api/queue/status — returns queue stats
   fastify.get('/queue/status', async (_request, reply) => {
     const [waiting, active, completed, failed] = await Promise.all([

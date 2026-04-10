@@ -66,6 +66,8 @@ export const submissionWorker = new Worker<SubmissionJobData>(
   {
     connection,
     concurrency: 1, // one at a time globally
+    lockDuration: 300_000, // 5 min — browser sessions can run long
+    lockRenewTime: 60_000,  // renew every 60s (must be < lockDuration / 2)
     limiter: {
       max: 1,
       duration: 5000, // 1 job per 5 seconds (rate limiting)
