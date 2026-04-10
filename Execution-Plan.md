@@ -4,25 +4,25 @@
 
 Current build priority for the NAP Citation Engine.
 
-## Phase: Get the App Fully Rendering
+## ~~Phase: Get the App Fully Rendering~~ ✅ COMPLETE (Session 1)
 
-The app shell exists but several pages are imported in App.tsx without implementations.
-These will cause build/runtime errors until created.
+All pages and backend routes were already built. Full monorepo build clean.
+App is live and rendering at `nap.fediddy.com`.
 
 ### Missing Pages (must create stubs)
-- [ ] `apps/web/src/features/monitoring/pages/DashboardPage.tsx`
-- [ ] `apps/web/src/features/monitoring/pages/StatusMatrixPage.tsx`
-- [ ] `apps/web/src/features/monitoring/pages/ActionQueuePage.tsx`
-- [ ] `apps/web/src/features/monitoring/pages/BusinessCitationPage.tsx`
-- [ ] `apps/web/src/features/directories/pages/DirectoriesListPage.tsx`
-- [ ] `apps/web/src/features/directories/pages/AddDirectoryPage.tsx`
-- [ ] `apps/web/src/features/businesses/pages/SubmissionPlanPage.tsx`
-- [ ] `apps/web/src/features/reporting/pages/ExportPage.tsx`
+- [x] `apps/web/src/features/monitoring/pages/DashboardPage.tsx`
+- [x] `apps/web/src/features/monitoring/pages/StatusMatrixPage.tsx`
+- [x] `apps/web/src/features/monitoring/pages/ActionQueuePage.tsx`
+- [x] `apps/web/src/features/monitoring/pages/BusinessCitationPage.tsx`
+- [x] `apps/web/src/features/directories/pages/DirectoriesListPage.tsx`
+- [x] `apps/web/src/features/directories/pages/AddDirectoryPage.tsx`
+- [x] `apps/web/src/features/businesses/pages/SubmissionPlanPage.tsx`
+- [x] `apps/web/src/features/reporting/pages/ExportPage.tsx`
 
 ### Backend Routes Needed
-- [ ] `GET /api/directories` — list all directories (for DirectoriesListPage)
-- [ ] `GET /api/submissions/summary` — dashboard summary stats
-- [ ] `GET /api/submissions/matrix` — status matrix data
+- [x] `GET /api/directories` — list all directories (for DirectoriesListPage)
+- [x] `GET /api/submissions/summary` — dashboard summary stats
+- [x] `GET /api/submissions/matrix` — status matrix data
 
 ## Phase: Core Submission Engine (Epic 3)
 

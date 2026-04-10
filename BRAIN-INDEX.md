@@ -30,3 +30,4 @@
 
 ## Session Log
 - **Session 0**: Brain initialized. Epics 1-7 planned (all marked done in sprint-status). Story 1.1-1.5 actually implemented. 2026-04-08
+- **Session 1**: App shell verified — all pages + backend routes already built, build clean. Phase 1 complete. Epic 3 is next. 2026-04-08
