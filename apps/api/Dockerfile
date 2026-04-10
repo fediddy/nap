@@ -1,4 +1,5 @@
-FROM node:20-alpine AS builder
+# Use Debian-based image for both stages — Playwright needs system libs unavailable in Alpine
+FROM node:20 AS builder
 WORKDIR /app
 
 # Copy workspace manifests first (layer cache)
@@ -11,6 +12,10 @@ COPY apps/api/package.json ./apps/api/
 # even when Coolify passes NODE_ENV=production as a build arg
 RUN npm ci --include=dev
 
+# Install Playwright system deps + download Chromium in builder (cached layer)
+RUN npx playwright install-deps chromium
+RUN npx playwright install chromium
+
 # Copy source
 COPY packages/shared ./packages/shared
 COPY apps/api ./apps/api
@@ -20,9 +25,11 @@ RUN npm run build -w packages/shared
 RUN npm run build -w apps/api
 
 # ---- Production stage ----
-# Use Debian-based image — Alpine lacks the system libs Playwright needs
 FROM node:20
 WORKDIR /app
+
+# Install Playwright system runtime dependencies
+RUN npx --yes playwright install-deps chromium
 
 # Runtime: hoisted node_modules + built packages
 COPY --from=builder /app/node_modules ./node_modules
@@ -32,8 +39,8 @@ COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/package.json ./apps/api/
 COPY --from=builder /app/apps/api/drizzle ./apps/api/drizzle
 
-# Install Chromium + system dependencies for Playwright browser adapters
-RUN npx playwright install chromium --with-deps
+# Copy downloaded Chromium browser from builder
+COPY --from=builder /root/.cache/ms-playwright /root/.cache/ms-playwright
 
 WORKDIR /app/apps/api
 ENV NODE_ENV=production
