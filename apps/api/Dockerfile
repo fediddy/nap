@@ -20,7 +20,8 @@ RUN npm run build -w packages/shared
 RUN npm run build -w apps/api
 
 # ---- Production stage ----
-FROM node:20-alpine
+# Use Debian-based image — Alpine lacks the system libs Playwright needs
+FROM node:20
 WORKDIR /app
 
 # Runtime: hoisted node_modules + built packages
@@ -30,6 +31,9 @@ COPY --from=builder /app/packages/shared/package.json ./packages/shared/
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/package.json ./apps/api/
 COPY --from=builder /app/apps/api/drizzle ./apps/api/drizzle
+
+# Install Chromium + system dependencies for Playwright browser adapters
+RUN npx playwright install chromium --with-deps
 
 WORKDIR /app/apps/api
 ENV NODE_ENV=production
