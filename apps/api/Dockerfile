@@ -28,16 +28,16 @@ RUN npm run build -w apps/api
 FROM node:20
 WORKDIR /app
 
-# Install Playwright system runtime dependencies
-RUN npx --yes playwright install-deps chromium
-
-# Runtime: hoisted node_modules + built packages
+# Copy node_modules first so npx can find the playwright CLI
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/packages/shared/package.json ./packages/shared/
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/package.json ./apps/api/
 COPY --from=builder /app/apps/api/drizzle ./apps/api/drizzle
+
+# Install Playwright system runtime dependencies (apt libs for Chromium)
+RUN npx playwright install-deps chromium
 
 # Copy downloaded Chromium browser from builder
 COPY --from=builder /root/.cache/ms-playwright /root/.cache/ms-playwright
