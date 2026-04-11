@@ -10,6 +10,7 @@ import submissionsRoutes from './routes/submissions.routes.js';
 import propagationRoutes from './routes/propagation.routes.js';
 import exportRoutes from './routes/export.routes.js';
 import planRoutes from './routes/plan.routes.js';
+import sessionRelayRoutes from './routes/session-relay.routes.js';
 import { submissionWorker } from './queues/submission.queue.js';
 
 const server = Fastify({ logger });
@@ -29,6 +30,7 @@ await server.register(submissionsRoutes, { prefix: '/api' });
 await server.register(propagationRoutes, { prefix: '/api' });
 await server.register(exportRoutes, { prefix: '/api' });
 await server.register(planRoutes, { prefix: '/api' });
+await server.register(sessionRelayRoutes, { prefix: '/api' });
 
 // Start BullMQ worker
 server.log.info('BullMQ submission worker started');
