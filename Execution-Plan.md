@@ -36,9 +36,19 @@ Once UI shell is complete:
 Full implementation of dashboard, status matrix, action queue with real data.
 
 ## Phase: Browser Adapters (Epic 3 continued)
-Story 3.5: Facebook adapter
-Story 3.6: Yelp adapter
-Requires: Camoufox setup, proxy infrastructure
+- [x] Story 3.5: Facebook adapter — multi-account pool via directory_accounts table (Session 2)
+- [ ] Story 3.6: Yelp adapter — still uses file-based profiles; migrate to directory_accounts
+
+## Phase: Session Relay Infrastructure ✅ COMPLETE (Session 2)
+- [x] `directory_accounts` table + migrations (0005, 0006)
+- [x] `POST /api/session-relay/:slug` — cookie injection endpoint
+- [x] `GET /api/session-relay/:slug` — list accounts per directory
+- [x] Facebook adapter rewritten to use account pool (LRU selection)
+
+## Pending
+- [ ] RingBa phone relay for directory phone verification (on hold)
+- [ ] Deploy migrations to prod + inject first Facebook session + end-to-end test
+- [ ] Epic 5: Monitoring — real data for dashboard, status matrix, action queue
 
 ---
-*Last updated: 2026-04-08*
+*Last updated: 2026-04-11*
