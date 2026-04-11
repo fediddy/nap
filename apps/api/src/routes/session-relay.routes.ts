@@ -47,7 +47,8 @@ export default async function sessionRelayRoutes(fastify: FastifyInstance) {
         .where(eq(directoryAccounts.id, existing.id))
         .returning();
 
-      return reply.send({ data: updated, meta: { action: 'updated' } });
+      const { cookiesJson: _, ...safeUpdated } = updated;
+      return reply.send({ data: safeUpdated, meta: { action: 'updated' } });
     }
 
     // Insert new account
@@ -62,7 +63,8 @@ export default async function sessionRelayRoutes(fastify: FastifyInstance) {
       })
       .returning();
 
-    return reply.status(201).send({ data: created, meta: { action: 'created' } });
+    const { cookiesJson: _, ...safeCreated } = created;
+    return reply.status(201).send({ data: safeCreated, meta: { action: 'created' } });
   });
 
   // GET /api/session-relay/:slug — list accounts for a directory
