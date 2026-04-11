@@ -1,6 +1,8 @@
 import type { BusinessProfile, SubmissionResult, RemovalResult } from '@nap/shared';
 import type { DirectoryAdapter } from './base.adapter.js';
-import { getOrCreateProfile, saveProfile } from '../browser/profile.js';
+import { eq, and, sql } from 'drizzle-orm';
+import { db } from '../db/connection.js';
+import { directoryAccounts } from '../db/schema.js';
 import { createBrowserContext, humanType } from '../browser/engine.js';
 import { restoreSession } from '../browser/session.js';
 
@@ -10,12 +12,40 @@ export class FacebookBusinessAdapter implements DirectoryAdapter {
   readonly type = 'browser' as const;
 
   async submit(business: BusinessProfile): Promise<SubmissionResult> {
-    const profile = await getOrCreateProfile(business.id, 'facebook-business');
+    // Pick least-recently-used active Facebook account
+    const [account] = await db
+      .select()
+      .from(directoryAccounts)
+      .where(and(eq(directoryAccounts.slug, 'facebook'), eq(directoryAccounts.status, 'active')))
+      .orderBy(sql`last_used_at ASC NULLS FIRST`)
+      .limit(1);
+
+    if (!account) {
+      return {
+        status: 'requires_action',
+        message: 'No active Facebook account — POST cookies to /api/session-relay/facebook',
+      };
+    }
+
+    // Build a NAPBrowserProfile-compatible object from the account
+    const profile = {
+      businessId: account.id,
+      directorySlug: 'facebook',
+      userAgent:
+        account.userAgent ??
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
+      viewport: { width: 1440, height: 900 },
+      locale: 'en-US',
+      timezone: 'America/New_York',
+      cookiesJson: account.cookiesJson ?? '',
+      createdAt: account.createdAt.toISOString(),
+    };
+
     const context = await createBrowserContext(profile);
 
     try {
-      if (profile.cookiesJson && profile.cookiesJson.length > 0) {
-        await restoreSession(context, profile.cookiesJson);
+      if (account.cookiesJson) {
+        await restoreSession(context, account.cookiesJson);
       }
 
       const page = await context.page();
@@ -23,9 +53,14 @@ export class FacebookBusinessAdapter implements DirectoryAdapter {
 
       const currentUrl = page.url();
       if (currentUrl.includes('/login')) {
+        // Mark account as needing reauth
+        await db.update(directoryAccounts)
+          .set({ status: 'needs_reauth', updatedAt: new Date() })
+          .where(eq(directoryAccounts.id, account.id));
+
         return {
           status: 'requires_action',
-          message: 'Login required — navigate to /session-relay/facebook-business to authenticate',
+          message: `Facebook account "${account.label}" needs re-authentication — POST new cookies to /api/session-relay/facebook`,
         };
       }
 
@@ -49,15 +84,21 @@ export class FacebookBusinessAdapter implements DirectoryAdapter {
       const pageIdMatch = newUrl.match(/\/(\d+)\/?$/);
       const pageId = pageIdMatch ? pageIdMatch[1] : newUrl;
 
-      // Persist session cookies
+      // Save updated cookies + increment pages_created
       const updatedCookiesJson = await context.exportCookies();
-      profile.cookiesJson = updatedCookiesJson;
-      await saveProfile(profile);
+      await db.update(directoryAccounts)
+        .set({
+          cookiesJson: updatedCookiesJson,
+          pagesCreated: sql`pages_created + 1`,
+          lastUsedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .where(eq(directoryAccounts.id, account.id));
 
       return {
         status: 'submitted',
         externalId: pageId,
-        message: 'Page created',
+        message: `Page created via account "${account.label}"`,
       };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
