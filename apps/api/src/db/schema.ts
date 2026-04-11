@@ -8,6 +8,7 @@ import {
   jsonb,
   boolean,
   integer,
+  index,
 } from 'drizzle-orm/pg-core';
 
 // Enums
@@ -91,7 +92,9 @@ export const directoryAccounts = pgTable('directory_accounts', {
   lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => ({
+  slugIdx: index('directory_accounts_slug_idx').on(t.slug),
+}));
 
 // Type exports for use in services
 export type Business = typeof businesses.$inferSelect;

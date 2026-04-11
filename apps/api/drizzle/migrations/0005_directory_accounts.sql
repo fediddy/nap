@@ -17,3 +17,4 @@ CREATE TABLE IF NOT EXISTS "directory_accounts" (
   "created_at" timestamp with time zone DEFAULT now() NOT NULL,
   "updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
+CREATE INDEX IF NOT EXISTS "directory_accounts_slug_idx" ON "directory_accounts" ("slug");
