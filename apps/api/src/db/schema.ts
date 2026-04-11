@@ -77,6 +77,22 @@ export const submissions = pgTable('submissions', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// Directory Accounts table — stores authenticated browser sessions per directory
+export const directoryAccountStatusEnum = pgEnum('directory_account_status', ['active', 'needs_reauth', 'suspended']);
+
+export const directoryAccounts = pgTable('directory_accounts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: varchar('slug', { length: 100 }).notNull(),
+  label: varchar('label', { length: 255 }).notNull(),
+  cookiesJson: text('cookies_json'),
+  userAgent: text('user_agent'),
+  status: directoryAccountStatusEnum('status').notNull().default('active'),
+  pagesCreated: integer('pages_created').notNull().default(0),
+  lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // Type exports for use in services
 export type Business = typeof businesses.$inferSelect;
 export type NewBusiness = typeof businesses.$inferInsert;
@@ -86,3 +102,5 @@ export type Batch = typeof batches.$inferSelect;
 export type NewBatch = typeof batches.$inferInsert;
 export type Submission = typeof submissions.$inferSelect;
 export type NewSubmission = typeof submissions.$inferInsert;
+export type DirectoryAccount = typeof directoryAccounts.$inferSelect;
+export type NewDirectoryAccount = typeof directoryAccounts.$inferInsert;
