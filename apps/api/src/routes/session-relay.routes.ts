@@ -11,6 +11,9 @@ export default async function sessionRelayRoutes(fastify: FastifyInstance) {
     const { slug } = request.params as { slug: string };
     const body = request.body as { label?: unknown; cookies?: unknown; userAgent?: unknown };
 
+    if (!slug || slug.length > 100) {
+      return reply.status(400).send({ error: true, code: 'VALIDATION_ERROR', message: 'slug must be 1-100 characters' });
+    }
     if (!body.label || typeof body.label !== 'string') {
       return reply.status(400).send({ error: true, code: 'VALIDATION_ERROR', message: 'label is required' });
     }
@@ -28,48 +31,37 @@ export default async function sessionRelayRoutes(fastify: FastifyInstance) {
     const label = body.label as string;
     const userAgent = typeof body.userAgent === 'string' ? body.userAgent : null;
 
-    // Check for existing account with same slug+label
-    const [existing] = await db
+    const isNew = !(await db
       .select({ id: directoryAccounts.id })
       .from(directoryAccounts)
-      .where(and(eq(directoryAccounts.slug, slug), eq(directoryAccounts.label, label)));
+      .where(and(eq(directoryAccounts.slug, slug), eq(directoryAccounts.label, label)))
+      .then(r => r[0]));
 
-    if (existing) {
-      // Update cookies and reset status to active
-      const [updated] = await db
-        .update(directoryAccounts)
-        .set({
+    const [account] = await db
+      .insert(directoryAccounts)
+      .values({ slug, label, cookiesJson: body.cookies as string, userAgent, status: 'active' })
+      .onConflictDoUpdate({
+        target: [directoryAccounts.slug, directoryAccounts.label],
+        set: {
           cookiesJson: body.cookies as string,
           userAgent,
           status: 'active',
           updatedAt: new Date(),
-        })
-        .where(eq(directoryAccounts.id, existing.id))
-        .returning();
-
-      const { cookiesJson: _, ...safeUpdated } = updated;
-      return reply.send({ data: safeUpdated, meta: { action: 'updated' } });
-    }
-
-    // Insert new account
-    const [created] = await db
-      .insert(directoryAccounts)
-      .values({
-        slug,
-        label,
-        cookiesJson: body.cookies as string,
-        userAgent,
-        status: 'active',
+        },
       })
       .returning();
 
-    const { cookiesJson: _, ...safeCreated } = created;
-    return reply.status(201).send({ data: safeCreated, meta: { action: 'created' } });
+    const { cookiesJson: _, ...safeAccount } = account;
+    return reply.status(isNew ? 201 : 200).send({ data: safeAccount, meta: { action: isNew ? 'created' : 'updated' } });
   });
 
   // GET /api/session-relay/:slug — list accounts for a directory
   fastify.get('/session-relay/:slug', async (request, reply) => {
     const { slug } = request.params as { slug: string };
+
+    if (!slug || slug.length > 100) {
+      return reply.status(400).send({ error: true, code: 'VALIDATION_ERROR', message: 'slug must be 1-100 characters' });
+    }
 
     const accounts = await db
       .select({

@@ -43,6 +43,13 @@
       "when": 1744300000000,
       "tag": "0005_directory_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1744300060000,
+      "tag": "0006_directory_accounts_unique",
+      "breakpoints": true
     }
   ]
 }

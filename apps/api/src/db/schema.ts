@@ -9,6 +9,7 @@ import {
   boolean,
   integer,
   index,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 // Enums
@@ -94,6 +95,7 @@ export const directoryAccounts = pgTable('directory_accounts', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => ({
   slugIdx: index('directory_accounts_slug_idx').on(t.slug),
+  slugLabelUniq: unique('directory_accounts_slug_label_uniq').on(t.slug, t.label),
 }));
 
 // Type exports for use in services
