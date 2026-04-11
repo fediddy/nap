@@ -2,7 +2,7 @@
 
 # Implementation Status
 
-> Auto-synced from sprint-status.yaml on 2026-04-10
+> Auto-synced from sprint-status.yaml on 2026-04-11
 
 **Note**: "done" in plan status = story doc complete, not necessarily code written. "Evidence" column shows actual git commits touching source files.
 
@@ -73,4 +73,4 @@
 | `7-2-nap-consistency-check` | ✅ done | no commits found |
 
 ---
-*Last synced: 2026-04-10 — [scripts/sync-brain.js](../scripts/sync-brain.js)*
+*Last synced: 2026-04-11 — [scripts/sync-brain.js](../scripts/sync-brain.js)*
